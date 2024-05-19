@@ -18,21 +18,36 @@ public class Task {
     @Column(name = "col_task_description")
     private String description;
 
-//    @Column(name = "col_task_creation-time")
-//    private LocalDateTime creationTime;
-//
-//    @Column(name = "col_task_completion-time")
-//    private LocalDateTime completionTime;
-
     @Column(name = "col_task_position", nullable = false)
     private Integer position;
 
     @Column(name = "col_task_column", nullable = false)
     private Integer column;
 
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_project-id")
-//    private Project project;
+    @ManyToOne      //в проекте может быть много задач
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_user_id")
+    private User creator;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_user_id")
+    private User assignee;
+
+
+
+
+//    @Column(name = "col_task_creation-time")
+//    private LocalDateTime creationTime;
+//
+//    @Column(name = "col_task_completion-time")
+//    private LocalDateTime completionTime;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "col_task_creator-id")

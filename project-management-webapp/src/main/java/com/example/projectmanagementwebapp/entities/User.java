@@ -3,13 +3,15 @@ package com.example.projectmanagementwebapp.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tab_user")
 @Data
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "col_user_id")
     private Integer id;
 
@@ -19,7 +21,19 @@ public class User {
     @Column(name = "col_user_email", length = 30, nullable = false)
     private String email;
 
-    @Column(name = "col_user_password", length = 30, nullable = false)
-    private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Project> userProjects;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private List<Task> createdTasks;
+
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private List<Task> assignedTasks;
+
+
+
+//       вход по одноразовому коду
+//    @Column(name = "col_user_password", length = 30, nullable = false)
+//    private String password;
 
 }
