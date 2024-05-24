@@ -9,7 +9,6 @@ import java.util.List;
 @Table(name = "tab_user")
 @Data
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "col_user_id")
@@ -17,6 +16,9 @@ public class User {
 
     @Column(name = "col_user_name", length = 30, nullable = false)
     private String name;
+
+    @Column(name = "col_user_pass", length = 30, nullable = false)
+    private String password;
 
     @Column(name = "col_user_email", length = 30, nullable = false)
     private String email;
@@ -29,7 +31,6 @@ public class User {
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
     private List<Task> assignedTasks;
-
 
 
 //       вход по одноразовому коду
