@@ -14,13 +14,13 @@ public class User {
     @Column(name = "col_user_id")
     private Integer id;
 
-    @Column(name = "col_user_name", length = 30, nullable = false)
+    @Column(name = "col_user_name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "col_user_pass", length = 30, nullable = false)
+    @Column(name = "col_user_pass", nullable = false)
     private String password;
 
-    @Column(name = "col_user_email", length = 30, nullable = false)
+    @Column(name = "col_user_email", nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
