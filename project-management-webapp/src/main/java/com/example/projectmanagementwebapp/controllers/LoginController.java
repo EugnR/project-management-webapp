@@ -46,19 +46,13 @@ public class LoginController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Fail", null));
         }
+    }
 
-
-//        // Пример логики аутентификации. Замените на вашу логику.
-//        if ("user".equals(login) && "password".equals(password)) {
-//            String userId = "12345"; // Пример userId, замените на ваш способ получения userId
-//            AuthResponse authResponse = new AuthResponse("Success", userId);
-//            return ResponseEntity.ok(authResponse);
-//        } else {
-//            AuthResponse authResponse = new AuthResponse("Fail", null);
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authResponse);
-//        }
-
-
+    @PostMapping("/register")
+    public ResponseEntity<User> processPost(@RequestBody User user) {
+        userRepository.save(user);
+        System.out.println(user);
+        return ResponseEntity.ok(user);
     }
 }
 

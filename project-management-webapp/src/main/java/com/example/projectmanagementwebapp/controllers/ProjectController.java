@@ -1,63 +1,99 @@
 package com.example.projectmanagementwebapp.controllers;
 
+import com.example.projectmanagementwebapp.entities.AuthResponse;
+import com.example.projectmanagementwebapp.entities.Project;
+import com.example.projectmanagementwebapp.entities.User;
+import com.example.projectmanagementwebapp.repositories.ProjectRepository;
+import com.example.projectmanagementwebapp.repositories.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ProjectController {
 
+    @Autowired
+    private ProjectRepository projectRepository;
 
-    @GetMapping("/projectGet")
-    public String getProject(){
-        return "0";
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    @PostMapping("/projectPost")
-    public String postProject(){
-        return "0";
-    }
-
-    //region что приходит с фронта
-    //Запрос на создание проекта
-    //имя - Untitled
-    //создатель - id создателя проекта
-    //endregion
-    @PutMapping("/projectPut")
-    public String putProject(@RequestBody String json){
+    @PostMapping("/projectGet")
+    public List<Project> processGet(@RequestBody String json){
         try {
             ObjectMapper requestMapper = new ObjectMapper();
             JsonNode rootNode = requestMapper.readTree(json);
-            ObjectMapper jsonAssemblerMapper = new ObjectMapper();       //для сериализации в самом конце
 
-            String taskName = rootNode.get("taskName").asText();
-            String taskDescription = rootNode.get("taskDescription").asText();
-            String taskCreator = rootNode.get("taskCreator").asText();
-            String taskAssignee = rootNode.get("taskAssignee").asText();
-            String taskProject = rootNode.get("taskProject").asText();
+            Integer userId= rootNode.get("user").asInt();
 
+            User user = userRepository.findById(userId).orElse(null);
 
-            Map<String, String> outputJson = new HashMap<>();
-            outputJson.put("gottenName", taskName);
-            outputJson.put("gottenDescription", taskDescription);
-            outputJson.put("gottenCreator", taskCreator);
-            outputJson.put("gottenAssignee", taskAssignee);
-            outputJson.put("gottenProject", taskProject);
+            return projectRepository.findAllByUser(user);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
 
-            return jsonAssemblerMapper.writeValueAsString(outputJson);
+        //return "0";
+    }
+
+    @PostMapping("/projectCreate")
+    public ResponseEntity<?> postProject(@RequestBody String json){
+        try {
+            ObjectMapper requestMapper = new ObjectMapper();
+            JsonNode rootNode = requestMapper.readTree(json);
+
+            String projectName = rootNode.get("name").asText();
+            Integer userId= rootNode.get("user").asInt();
+
+            User user = userRepository.findById(userId).orElse(null);
+
+            Project project = new Project();
+            project.setName(projectName);
+            project.setUser(user);
+            projectRepository.save(project);
+            System.out.println(project);
+            return ResponseEntity.ok(project);
+
+        } catch (Exception e){
+            System.out.println(e);
+            return (ResponseEntity<?>) ResponseEntity.internalServerError();
+        }
+
+    }
+
+    @PutMapping("/projectPut")
+    public String putProject(@RequestBody String json){
+        try {
+
         }
         catch (Exception e){
             return "Ошибка обработки JSON: " + e.getMessage();
         }
+        return json;
     }
 
-    @DeleteMapping
-    public String deleteProject(){
-        return "0";
+    @DeleteMapping("projectDelete/{id}")
+    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+            AuthResponse authResponse = new AuthResponse("Success", id.toString());
+            return ResponseEntity.ok(authResponse);
+        } else {
+            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
+            return ResponseEntity.ok(authResponse);
+        }
+
+
+
     }
 }

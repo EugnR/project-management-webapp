@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/example/")
-public class FrontController {
+public class TestController {
 
     @Autowired
     UserRepository userRepository;
@@ -78,4 +77,39 @@ public class FrontController {
     public String processDelete(){
         return "0";
     }
+
+
+
+    @PutMapping("/projectPut")
+    public String putProject(@RequestBody String json){
+        try {
+            ObjectMapper requestMapper = new ObjectMapper();
+            JsonNode rootNode = requestMapper.readTree(json);
+            ObjectMapper jsonAssemblerMapper = new ObjectMapper();       //для сериализации в самом конце
+
+            String taskName = rootNode.get("taskName").asText();
+            String taskDescription = rootNode.get("taskDescription").asText();
+            String taskCreator = rootNode.get("taskCreator").asText();
+            String taskAssignee = rootNode.get("taskAssignee").asText();
+            String taskProject = rootNode.get("taskProject").asText();
+
+
+            Map<String, String> outputJson = new HashMap<>();
+            outputJson.put("gottenName", taskName);
+            outputJson.put("gottenDescription", taskDescription);
+            outputJson.put("gottenCreator", taskCreator);
+            outputJson.put("gottenAssignee", taskAssignee);
+            outputJson.put("gottenProject", taskProject);
+
+            return jsonAssemblerMapper.writeValueAsString(outputJson);
+        }
+        catch (Exception e){
+            return "Ошибка обработки JSON: " + e.getMessage();
+        }
+    }
+
+
+
+
+
 }

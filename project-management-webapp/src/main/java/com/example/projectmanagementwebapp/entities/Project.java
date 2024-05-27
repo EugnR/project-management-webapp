@@ -2,12 +2,17 @@ package com.example.projectmanagementwebapp.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Table(name = "tab_project")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"user"})
 public class Project {
 
     @Id
@@ -19,7 +24,7 @@ public class Project {
     private String name;
 
     @ManyToOne      //пользователь владеет проектами
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) //проект владеет задачами

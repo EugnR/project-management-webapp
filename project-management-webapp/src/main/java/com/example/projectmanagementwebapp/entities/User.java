@@ -2,12 +2,17 @@ package com.example.projectmanagementwebapp.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Table(name = "tab_user")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"userProjects"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,8 +28,8 @@ public class User {
     @Column(name = "col_user_email", nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Project> userProjects;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private List<Project> userProjects;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private List<Task> createdTasks;
