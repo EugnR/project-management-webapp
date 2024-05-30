@@ -1,5 +1,6 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,21 +22,25 @@ public class Task {
     @Column(name = "col_task_position", nullable = false)
     private Integer position;
 
-    @Column(name = "col_task_column", nullable = false)
-    private Integer column;
+//    @Column(name = "col_task_column", nullable = false)
+//    private Integer column;
 
-    @ManyToOne      //в проекте может быть много задач
-    @JoinColumn(name = "project_id")
-    private Project project;
 
+//    @ManyToOne      //в проекте может быть много задач
+//    @JoinColumn(name = "project_id")
+//    private Project project;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "creator_user_id")
     private User creator;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "assignee_user_id")
     private User assignee;

@@ -1,5 +1,7 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import java.util.List;
 @Table(name = "tab_user")
 @Getter
 @Setter
-@ToString(exclude = {"userProjects"})
+//@ToString(exclude = {"userProjects"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,13 +30,15 @@ public class User {
     @Column(name = "col_user_email", nullable = false)
     private String email;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Project> userProjects;
+    @JsonIgnore
+//    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Project> userProjects;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creator")
     private List<Task> createdTasks;
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignee")
     private List<Task> assignedTasks;
 
 
