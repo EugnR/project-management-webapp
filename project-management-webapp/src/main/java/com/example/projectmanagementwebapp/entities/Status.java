@@ -1,5 +1,6 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ public class Status{
     private String name;
 
     @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;

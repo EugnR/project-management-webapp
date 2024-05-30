@@ -31,7 +31,7 @@ public class User {
     private String email;
 
     @JsonIgnore
-//    @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> userProjects;
 

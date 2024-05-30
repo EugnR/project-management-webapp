@@ -1,5 +1,6 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Task {
 //    private Project project;
 
     @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;

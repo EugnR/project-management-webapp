@@ -29,13 +29,13 @@ public class Project {
     @JsonIgnore
     @ManyToOne      //пользователь владеет проектами
     @JoinColumn(name = "user_id", nullable = false)
-//    @JsonBackReference
+    @JsonBackReference
     private User user;
 
 //    по проекту находятся статусы проекта
     @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) //проект владеет задачами
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Status> projectStatuses;
 
 
