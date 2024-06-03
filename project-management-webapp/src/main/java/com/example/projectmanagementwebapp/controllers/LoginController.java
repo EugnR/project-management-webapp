@@ -1,6 +1,7 @@
 package com.example.projectmanagementwebapp.controllers;
 
 import com.example.projectmanagementwebapp.entities.AuthResponse;
+import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,11 +50,36 @@ public class LoginController {
         }
     }
 
+//    @PostMapping("/register")
+//    public ResponseEntity<User> processPost(@RequestBody User user) {
+//        userRepository.save(user);
+//        System.out.println(user);
+//        return ResponseEntity.ok(user);
+//    }
+
     @PostMapping("/register")
-    public ResponseEntity<User> processPost(@RequestBody User user) {
-        userRepository.save(user);
-        System.out.println(user);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> register(@RequestBody String json){
+        try {
+            ObjectMapper requestMapper = new ObjectMapper();
+            JsonNode rootNode = requestMapper.readTree(json);
+
+            String userName = rootNode.get("name").asText();
+            String userPass = rootNode.get("password").asText();
+            String userEmail = rootNode.get("email").asText();
+
+            User user = new User();
+            user.setName(userName);
+            user.setPassword(userPass);
+            user.setEmail(userEmail);
+            userRepository.save(user);
+            System.out.println(user);
+            return ResponseEntity.ok(user);
+
+        } catch (Exception e){
+            System.out.println(e);
+            return (ResponseEntity<?>) ResponseEntity.internalServerError();
+        }
+
     }
 
 

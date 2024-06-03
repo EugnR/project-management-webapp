@@ -55,6 +55,8 @@ public class StatusController {
             Integer projectId= rootNode.get("projectId").asInt();
 
             Project project = projectRepository.findById(projectId).orElse(null);
+            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
+//            if (project == null){ throw new RuntimeException("Project not found");}
 
             Status status = new Status();
             status.setName(statusName);

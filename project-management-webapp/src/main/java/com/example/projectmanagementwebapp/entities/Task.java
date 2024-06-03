@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Table(name = "tab_task")
 @Data // используйте Lombok для генерации геттеров, сеттеров, equals, hashCode и toString
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "col_task_id")
     private Integer id;
 
@@ -35,17 +36,19 @@ public class Task {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "status_id")
+    @ToString.Exclude // Исключаем из toString
     private Status status;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "creator_user_id")
-    private User creator;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "assignee_user_id")
-    private User assignee;
+}
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "creator_user_id")
+//    private User creator;
+//
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "assignee_user_id")
+//    private User assignee;
 
 
 
@@ -75,4 +78,4 @@ public class Task {
 //    @ManyToOne
 //    @JoinColumn(name = "col_task_status-id")
 //    private Status status;
-}
+

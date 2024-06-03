@@ -76,6 +76,8 @@ public class ProjectController {
             Integer userId= rootNode.get("userId").asInt();
 
             User user = userRepository.findById(userId).orElse(null);
+            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
+            //            if (user == null){ throw new RuntimeException("User not found");}
 
             Project project = new Project();
             project.setName(projectName);

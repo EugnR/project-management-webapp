@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -26,9 +27,10 @@ public class Status{
     @JoinColumn(name = "project_id")
     private Project project;
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
     @JsonManagedReference
+    @ToString.Exclude // Исключаем из toString
     private List<Task> statusTasks;
 
 }

@@ -53,17 +53,20 @@ public class TaskController {
             String taskDesc = rootNode.get("description").asText();
             Integer statusId = rootNode.get("statusId").asInt();
             Integer taskPosition = rootNode.get("position").asInt();
-            Integer creatorId = rootNode.get("creatorId").asInt();
+//            Integer creatorId = rootNode.get("creatorId").asInt();
 
             Status status = statusRepository.findById(statusId).orElse(null);
-            User creator = userRepository.findById(creatorId).orElse(null);
+            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
+//            if (status == null){ throw new RuntimeException("Status not found");}
+
+//            User creator = userRepository.findById(creatorId).orElse(null);
 
             Task task = new Task();
             task.setName(taskName);
             task.setDescription(taskDesc);
             task.setStatus(status);
             task.setPosition(taskPosition);
-            task.setCreator(creator);
+//            task.setCreator(creator);
 
             taskRepository.save(task);
             System.out.println(task);
@@ -76,8 +79,10 @@ public class TaskController {
 
     }
 
-    @DeleteMapping("taskDelete/{id}")
+    @DeleteMapping("deleteTask/{id}")
     public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+
+        Task task = taskRepository.getById(id);
 
         if (taskRepository.existsById(id)) {
             taskRepository.deleteById(id);

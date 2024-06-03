@@ -38,7 +38,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("userDelete/{id}")
+    @DeleteMapping("deleteUser/{id}")
     public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
 
         if (userRepository.existsById(id)) {

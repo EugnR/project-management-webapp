@@ -35,11 +35,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> userProjects;
 
-    @OneToMany(mappedBy = "creator")
-    private List<Task> createdTasks;
-
-    @OneToMany(mappedBy = "assignee")
-    private List<Task> assignedTasks;
+//    @OneToMany(mappedBy = "creator")
+//    private List<Task> createdTasks;
+//
+//    @OneToMany(mappedBy = "assignee")
+//    private List<Task> assignedTasks;
 
 
 //       вход по одноразовому коду
