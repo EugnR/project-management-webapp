@@ -1,14 +1,17 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Table(name = "tab_task")
 @Data // используйте Lombok для генерации геттеров, сеттеров, equals, hashCode и toString
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "col_task_id")
     private Integer id;
 
@@ -21,24 +24,31 @@ public class Task {
     @Column(name = "col_task_position", nullable = false)
     private Integer position;
 
-    @Column(name = "col_task_column", nullable = false)
-    private Integer column;
+//    @Column(name = "col_task_column", nullable = false)
+//    private Integer column;
 
-    @ManyToOne      //в проекте может быть много задач
-    @JoinColumn(name = "project_id")
-    private Project project;
 
+//    @ManyToOne      //в проекте может быть много задач
+//    @JoinColumn(name = "project_id")
+//    private Project project;
+
+    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "status_id")
+    @ToString.Exclude // Исключаем из toString
     private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "creator_user_id")
-    private User creator;
-
-    @ManyToOne
-    @JoinColumn(name = "assignee_user_id")
-    private User assignee;
+}
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "creator_user_id")
+//    private User creator;
+//
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "assignee_user_id")
+//    private User assignee;
 
 
 
@@ -68,4 +78,4 @@ public class Task {
 //    @ManyToOne
 //    @JoinColumn(name = "col_task_status-id")
 //    private Status status;
-}
+

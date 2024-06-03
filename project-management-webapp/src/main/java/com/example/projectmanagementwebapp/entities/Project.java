@@ -1,5 +1,8 @@
 package com.example.projectmanagementwebapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +15,7 @@ import java.util.List;
 @Table(name = "tab_project")
 @Getter
 @Setter
-@ToString(exclude = {"user"})
+//@ToString(exclude = {"user"})
 public class Project {
 
     @Id
@@ -23,12 +26,17 @@ public class Project {
     @Column(name = "col_project_name")
     private String name;
 
+    @JsonIgnore
     @ManyToOne      //пользователь владеет проектами
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
+//    по проекту находятся статусы проекта
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) //проект владеет задачами
-    private List<Task> projectTasks;
+    @JsonManagedReference
+    private List<Status> projectStatuses;
 
 
 }
