@@ -52,7 +52,7 @@ public class ProjectController {
 //        //return "0";
 //    }
 
-    @PostMapping("/getProjectsByUserId/{userId}")
+    @GetMapping("/getProjectsByUserId/{userId}")
     public ResponseEntity<?> processGet(@PathVariable Integer userId){
 
         User user = userRepository.findById(userId).orElse(null);
