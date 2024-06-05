@@ -3,7 +3,6 @@ package com.example.projectmanagementwebapp.controllers;
 import com.example.projectmanagementwebapp.entities.AuthResponse;
 import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.Status;
-import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
 import com.example.projectmanagementwebapp.repositories.StatusRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -46,13 +44,15 @@ public class StatusController {
     }
 
     @PostMapping("/createStatus")
-    public ResponseEntity<?> postProject(@RequestBody String json){
+    public ResponseEntity<?> createStatus(@RequestBody String json){
         try {
             ObjectMapper requestMapper = new ObjectMapper();
             JsonNode rootNode = requestMapper.readTree(json);
 
             String statusName = rootNode.get("name").asText();
             Integer projectId= rootNode.get("projectId").asInt();
+            Integer position= rootNode.get("position").asInt();
+
 
             Project project = projectRepository.findById(projectId).orElse(null);
             //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
@@ -61,6 +61,7 @@ public class StatusController {
             Status status = new Status();
             status.setName(statusName);
             status.setProject(project);
+            status.setPosition(position);
             statusRepository.save(status);
             System.out.println(status);
             return ResponseEntity.ok(status);
