@@ -59,17 +59,18 @@ public class StatusController {
 
             String statusName = rootNode.get("name").asText();
             Integer projectId= rootNode.get("projectId").asInt();
-            Integer position= rootNode.get("position").asInt();
+            //Integer position= rootNode.get("position").asInt();
 
 
             Project project = projectRepository.findById(projectId).orElse(null);
-            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
-//            if (project == null){ throw new RuntimeException("Project not found");}
+            Integer numOfStatusesInProject = project.getProjectStatuses().size();
+
+            if (project == null){ throw new RuntimeException("Project not found");}
 
             Status status = new Status();
             status.setName(statusName);
             status.setProject(project);
-            status.setPosition(position);
+            status.setPosition(numOfStatusesInProject + 1);
             statusRepository.save(status);
             System.out.println(status);
             return ResponseEntity.ok(status);
