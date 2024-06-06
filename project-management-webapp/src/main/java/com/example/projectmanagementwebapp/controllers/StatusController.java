@@ -86,8 +86,9 @@ public class StatusController {
         Status status = statusRepository.findById(id).orElse(null);
 
         if (status != null) {
-            status.setPosition(newPosition);
-//            statusService.updateTaskPositions(status, newPosition);
+//            status.setPosition(newPosition);
+            statusService.moveStatus(id, newPosition);
+
             AuthResponse authResponse = new AuthResponse("Success", id.toString());
             return ResponseEntity.ok(authResponse);
         } else {
@@ -98,9 +99,12 @@ public class StatusController {
 
     @DeleteMapping("deleteStatus/{id}")
     public ResponseEntity<AuthResponse> deleteStatus(@PathVariable Integer id) {
-
+        Status status = statusRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
         if (statusRepository.existsById(id)) {
-            statusRepository.deleteById(id);
+//            statusRepository.deleteById(id);
+            statusService.deleteStatus(id);
+            statusService.updateStatusPositions(status.getProject().getId());
             AuthResponse authResponse = new AuthResponse("Success", id.toString());
             return ResponseEntity.ok(authResponse);
         } else {
