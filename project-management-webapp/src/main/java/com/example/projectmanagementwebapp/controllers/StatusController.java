@@ -5,6 +5,8 @@ import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.Status;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
 import com.example.projectmanagementwebapp.repositories.StatusRepository;
+import com.example.projectmanagementwebapp.repositories.TaskRepository;
+import com.example.projectmanagementwebapp.services.StatusService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,12 @@ public class StatusController {
 
     @Autowired
     ProjectRepository projectRepository;
+
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    TaskRepository taskRepository;
 
     @GetMapping("/getAllStatuses")
     public List<Status> getAllStatuses(){
@@ -73,8 +81,23 @@ public class StatusController {
 
     }
 
+    @PostMapping("editStatusPosition/{id}/{newPosition}")
+    public ResponseEntity<AuthResponse> editStatusPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
+        Status status = statusRepository.findById(id).orElse(null);
+
+        if (status != null) {
+            status.setPosition(newPosition);
+//            statusService.updateTaskPositions(status, newPosition);
+            AuthResponse authResponse = new AuthResponse("Success", id.toString());
+            return ResponseEntity.ok(authResponse);
+        } else {
+            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
+            return ResponseEntity.ok(authResponse);
+        }
+    }
+
     @DeleteMapping("deleteStatus/{id}")
-    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+    public ResponseEntity<AuthResponse> deleteStatus(@PathVariable Integer id) {
 
         if (statusRepository.existsById(id)) {
             statusRepository.deleteById(id);
