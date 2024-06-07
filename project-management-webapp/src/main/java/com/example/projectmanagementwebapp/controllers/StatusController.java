@@ -82,7 +82,7 @@ public class StatusController {
 
     }
 
-    @PostMapping("editStatusPosition/{id}/{newPosition}")
+    @PostMapping("editStatusPosition/{id}")
     public ResponseEntity<AuthResponse> editStatusPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
         Status status = statusRepository.findById(id).orElse(null);
 
@@ -97,6 +97,22 @@ public class StatusController {
             return ResponseEntity.ok(authResponse);
         }
     }
+    @PostMapping("editStatusName/{id}")
+    public ResponseEntity<AuthResponse> editStatusName(@PathVariable Integer id, @RequestParam("newStatusName") String newName){
+        Status status = statusRepository.findById(id).orElse(null);
+
+        if (status != null) {
+//            status.setPosition(newPosition);
+            status.setName(newName);
+            statusRepository.save(status);
+            AuthResponse authResponse = new AuthResponse("Success", id.toString());
+            return ResponseEntity.ok(authResponse);
+        } else {
+            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
+            return ResponseEntity.ok(authResponse);
+        }
+    }
+
 
     @DeleteMapping("deleteStatus/{id}")
     public ResponseEntity<AuthResponse> deleteStatus(@PathVariable Integer id) {
