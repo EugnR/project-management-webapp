@@ -82,7 +82,7 @@ public class StatusController {
 
     }
 
-    @PostMapping("editStatusPosition/{id}")
+    @PostMapping("editStatusPosition/{id}/{newPosition}")
     public ResponseEntity<AuthResponse> editStatusPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
         Status status = statusRepository.findById(id).orElse(null);
 
