@@ -4,6 +4,7 @@ import com.example.projectmanagementwebapp.entities.*;
 import com.example.projectmanagementwebapp.repositories.StatusRepository;
 import com.example.projectmanagementwebapp.repositories.TaskRepository;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
+import com.example.projectmanagementwebapp.services.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,17 @@ public class TaskController {
     StatusRepository statusRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    TaskService taskService;
 
     @GetMapping("/getAllTasks")
-    public List<Task> getAllStatuses(){
+    public List<Task> getAllTasks(){
         List<Task> taskList = taskRepository.findAll();
         return taskList;
     }
 
     @GetMapping("getTasksByStatusId/{statusId}")
-    public ResponseEntity<?> getProjectStatuses(@PathVariable Integer statusId){
+    public ResponseEntity<?> getStatusTasks(@PathVariable Integer statusId){
 
         Status status = statusRepository.findById(statusId).orElse(null);
         if (status != null){
@@ -54,7 +57,7 @@ public class TaskController {
 //            Integer creatorId = rootNode.get("creatorId").asInt();
 
             Status status = statusRepository.findById(statusId).orElse(null);
-            Integer numOfStatusesInProject = status.getStatusTasks().size();
+            Integer numOfTasksInStatus = status.getStatusTasks().size();
 
             //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
 //            if (status == null){ throw new RuntimeException("Status not found");}
@@ -65,7 +68,7 @@ public class TaskController {
             task.setName(taskName);
             task.setDescription(taskDesc);
             task.setStatus(status);
-            task.setPosition(numOfStatusesInProject + 1);
+            task.setPosition(numOfTasksInStatus + 1);
 //            task.setCreator(creator);
 
             taskRepository.save(task);
@@ -79,13 +82,32 @@ public class TaskController {
 
     }
 
-    @DeleteMapping("deleteTask/{id}")
-    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+    @PostMapping("editTaskPosition/{id}/{newPosition}")
+    public ResponseEntity<AuthResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
+        Task task = taskRepository.findById(id).orElse(null);
 
-        Task task = taskRepository.getById(id);
+        if (task != null) {
+//            status.setPosition(newPosition);
+            taskService.moveTask(id, newPosition);
+
+            AuthResponse authResponse = new AuthResponse("Success", id.toString());
+            return ResponseEntity.ok(authResponse);
+        } else {
+            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
+            return ResponseEntity.ok(authResponse);
+        }
+    }
+
+
+    @DeleteMapping("deleteTask/{id}")
+    public ResponseEntity<AuthResponse> deleteTask(@PathVariable Integer id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
 
         if (taskRepository.existsById(id)) {
-            taskRepository.deleteById(id);
+//            taskRepository.deleteById(id);
+            taskService.deleteTask(id);
+            taskService.updateTaskPositions(task.getStatus().getId());
             AuthResponse authResponse = new AuthResponse("Success", id.toString());
             return ResponseEntity.ok(authResponse);
         } else {
