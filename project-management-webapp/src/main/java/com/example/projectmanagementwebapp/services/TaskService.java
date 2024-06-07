@@ -86,6 +86,7 @@ public class TaskService {
                 tasksOfOldStatus.get(i).setPosition(i + 1);
             }
 
+            task.setStatus(newStatus);
             // Добавить задачу в новую позицию нового статуса
             tasksOfNewStatus.add(newPosition - 1, task);
             // Перенумеровать позиции задач

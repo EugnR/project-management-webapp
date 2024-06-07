@@ -31,6 +31,11 @@ public class TaskController {
         List<Task> taskList = taskRepository.findAll();
         return taskList;
     }
+    @DeleteMapping("deleteAllTasks")
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
+    }
+
 
     @GetMapping("getTasksByStatusId/{statusId}")
     public ResponseEntity<?> getStatusTasks(@PathVariable Integer statusId){
