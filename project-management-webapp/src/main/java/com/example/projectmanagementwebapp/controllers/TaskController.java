@@ -82,13 +82,13 @@ public class TaskController {
 
     }
 
-    @PostMapping("editTaskPosition/{id}/{newPosition}")
-    public ResponseEntity<AuthResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
+    @PostMapping("editTaskPosition/{id}/{newStatusId}/{newPosition}")
+    public ResponseEntity<AuthResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newStatusId, @PathVariable Integer newPosition){
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task != null) {
 //            status.setPosition(newPosition);
-            taskService.moveTask(id, newPosition);
+            taskService.moveTask(id, newStatusId, newPosition);
 
             AuthResponse authResponse = new AuthResponse("Success", id.toString());
             return ResponseEntity.ok(authResponse);

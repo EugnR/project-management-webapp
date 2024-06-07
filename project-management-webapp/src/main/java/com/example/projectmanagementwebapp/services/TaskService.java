@@ -25,11 +25,12 @@ public class TaskService {
     ProjectRepository projectRepository;
 
     //@Transactional
-    public void updateTaskPositions(Integer statusId) {
+    public void updateTaskPositions(Integer statusId) {     //для переустановки положений после удаления
         // Получить status по ID
         Status status = statusRepository.findById(statusId)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
 
+        // Получить все задачи статуса, отсортированные по позиции
         List<Task> tasks = status.getStatusTasks().stream()
                 .sorted(Comparator.comparingInt(Task::getPosition))
                 .collect(Collectors.toList());
@@ -44,30 +45,63 @@ public class TaskService {
     }
 
     //    @Transactional
-    public void moveTask(Integer taskId, int newPosition) {
+    public void moveTask(Integer taskId, int newStatusId, int newPosition) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
 
-        Status status = task.getStatus();
+        Status oldStatus = task.getStatus();
 
-        // Получить все задачи статуса
-        List<Task> tasks = status.getStatusTasks().stream()
-                .sorted(Comparator.comparingInt(Task::getPosition))
-                .collect(Collectors.toList());
+        //если задачу переменстили в рамках одного столбца
+        if (oldStatus.getId() == newStatusId){
+            // Получить все задачи статуса
+            List<Task> tasksOfOldStatus = oldStatus.getStatusTasks().stream()
+                    .sorted(Comparator.comparingInt(Task::getPosition))
+                    .collect(Collectors.toList());
+            // Удалить задачу из текущей позиции
+            tasksOfOldStatus.remove(task);
+            // Добавить задачу в новую позицию
+            tasksOfOldStatus.add(newPosition - 1, task);
+            // Перенумеровать позиции задач
+            for (int i = 0; i < tasksOfOldStatus.size(); i++) {
+                tasksOfOldStatus.get(i).setPosition(i + 1);
+            }
+            // Сохранить обновленные задач
+            taskRepository.saveAll(tasksOfOldStatus);
+        } else {
+            Status newStatus = statusRepository.findById(newStatusId).orElse(null);
 
-        // Удалить задачу из текущей позиции
-        tasks.remove(task);
+            // Получить все задачи прошлого статуса
+            List<Task> tasksOfOldStatus = oldStatus.getStatusTasks().stream()
+                    .sorted(Comparator.comparingInt(Task::getPosition))
+                    .collect(Collectors.toList());
+            // Получить все задачи нового статуса
+            List<Task> tasksOfNewStatus = newStatus.getStatusTasks().stream()
+                    .sorted(Comparator.comparingInt(Task::getPosition))
+                    .collect(Collectors.toList());
 
-        // Добавить задачу в новую позицию
-        tasks.add(newPosition - 1, task);
+            // Удалить задачу из текущей позиции
+            tasksOfOldStatus.remove(task);
+            // Перенумеровать позиции задач в старом статусе
+            for (int i = 0; i < tasksOfOldStatus.size(); i++) {
+                tasksOfOldStatus.get(i).setPosition(i + 1);
+            }
 
-        // Перенумеровать позиции задач
-        for (int i = 0; i < tasks.size(); i++) {
-            tasks.get(i).setPosition(i + 1);
+            // Добавить задачу в новую позицию нового статуса
+            tasksOfNewStatus.add(newPosition - 1, task);
+            // Перенумеровать позиции задач
+            for (int i = 0; i < tasksOfNewStatus.size(); i++) {
+                tasksOfNewStatus.get(i).setPosition(i + 1);
+            }
+
+            // Сохранить обновленные задач
+            taskRepository.saveAll(tasksOfOldStatus);
+            // Сохранить обновленные задач
+            taskRepository.saveAll(tasksOfNewStatus);
         }
 
-        // Сохранить обновленные задач
-        taskRepository.saveAll(tasks);
+
+
+
     }
 
     //@Transactional
