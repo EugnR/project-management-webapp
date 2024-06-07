@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -44,7 +43,7 @@ public class TaskController {
     }
 
     @PostMapping("/createTask")
-    public ResponseEntity<?> postProject(@RequestBody String json){
+    public ResponseEntity<?> createTask(@RequestBody String json){
         try {
             ObjectMapper requestMapper = new ObjectMapper();
             JsonNode rootNode = requestMapper.readTree(json);
@@ -52,10 +51,11 @@ public class TaskController {
             String taskName = rootNode.get("name").asText();
             String taskDesc = rootNode.get("description").asText();
             Integer statusId = rootNode.get("statusId").asInt();
-            Integer taskPosition = rootNode.get("position").asInt();
 //            Integer creatorId = rootNode.get("creatorId").asInt();
 
             Status status = statusRepository.findById(statusId).orElse(null);
+            Integer numOfStatusesInProject = status.getStatusTasks().size();
+
             //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
 //            if (status == null){ throw new RuntimeException("Status not found");}
 
@@ -65,7 +65,7 @@ public class TaskController {
             task.setName(taskName);
             task.setDescription(taskDesc);
             task.setStatus(status);
-            task.setPosition(taskPosition);
+            task.setPosition(numOfStatusesInProject + 1);
 //            task.setCreator(creator);
 
             taskRepository.save(task);
