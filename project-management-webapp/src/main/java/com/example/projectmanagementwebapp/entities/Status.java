@@ -21,6 +21,9 @@ public class Status{
     @Column(name = "col_status_name")
     private String name;
 
+    @Column(name = "col_status_position")
+    private Integer position;
+
     @JsonIgnore
     @JsonBackReference
     @ManyToOne
