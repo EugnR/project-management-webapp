@@ -103,6 +103,24 @@ public class TaskController {
         }
     }
 
+    @PostMapping("editTask/{id}")
+    public ResponseEntity<AuthResponse> editStatusName(@PathVariable Integer id, @RequestParam("newTaskName") String newName,
+                                                       @RequestParam("newTaskDesc") String newDesc){
+        Task task = taskRepository.findById(id).orElse(null);
+
+        if (task != null) {
+//            status.setPosition(newPosition);
+            task.setName(newName);
+            task.setDescription(newDesc);
+            taskRepository.save(task);
+            AuthResponse authResponse = new AuthResponse("Success", id.toString());
+            return ResponseEntity.ok(authResponse);
+        } else {
+            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
+            return ResponseEntity.ok(authResponse);
+        }
+    }
+
 
     @DeleteMapping("deleteTask/{id}")
     public ResponseEntity<AuthResponse> deleteTask(@PathVariable Integer id) {
