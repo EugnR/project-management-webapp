@@ -106,6 +106,15 @@ public class TaskController {
     @PostMapping("editTask/{id}")
     public ResponseEntity<AuthResponse> editStatusName(@PathVariable Integer id, @RequestParam("newTaskName") String newName,
                                                        @RequestParam("newTaskDesc") String newDesc){
+
+        // Присвоение значений по умолчанию, если параметры пустые
+        if (newName == null || newName.trim().isEmpty()) {
+            newName = "Без названия";
+        }
+        if (newDesc == null || newDesc.trim().isEmpty()) {
+            newDesc = "Нет описания";
+        }
+
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task != null) {
