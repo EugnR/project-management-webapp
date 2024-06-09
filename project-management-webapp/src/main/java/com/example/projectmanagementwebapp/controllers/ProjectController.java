@@ -29,24 +29,6 @@ public class ProjectController {
         return projectList;
     }
 
-//    @PostMapping("/projectGet")
-//    public List<Project> processGet(@RequestBody String json){
-//        try {
-//            ObjectMapper requestMapper = new ObjectMapper();
-//            JsonNode rootNode = requestMapper.readTree(json);
-//
-//            Integer userId= rootNode.get("user").asInt();
-//
-//            User user = userRepository.findById(userId).orElse(null);
-//
-//            return projectRepository.findAllByUser(user);
-//        } catch (Exception e){
-//            System.out.println(e.getMessage());
-//            return new ArrayList<>();
-//        }
-//
-//        //return "0";
-//    }
 
     @GetMapping("/getProjectsByUserId/{userId}")
     public ResponseEntity<?> processGet(@PathVariable Integer userId){
@@ -72,8 +54,8 @@ public class ProjectController {
             Integer userId= rootNode.get("userId").asInt();
 
             User user = userRepository.findById(userId).orElse(null);
-            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
-            //            if (user == null){ throw new RuntimeException("User not found");}
+
+            if (user == null){ throw new RuntimeException("User not found");}
 
             Project project = new Project();
             project.setName(projectName);
@@ -88,8 +70,6 @@ public class ProjectController {
         }
 
     }
-
-
 
 
     @DeleteMapping("deleteProject/{id}")
