@@ -22,8 +22,6 @@ public class TaskController {
     @Autowired
     StatusRepository statusRepository;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
     TaskService taskService;
 
     @GetMapping("/getAllTasks")
@@ -59,23 +57,17 @@ public class TaskController {
             String taskName = rootNode.get("name").asText();
             String taskDesc = rootNode.get("description").asText();
             Integer statusId = rootNode.get("statusId").asInt();
-//            Integer creatorId = rootNode.get("creatorId").asInt();
 
             Status status = statusRepository.findById(statusId).orElse(null);
             Integer numOfTasksInStatus = status.getStatusTasks().size();
 
-            //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
-//            if (status == null){ throw new RuntimeException("Status not found");}
-
-//            User creator = userRepository.findById(creatorId).orElse(null);
+            if (status == null){ throw new RuntimeException("Status not found");}
 
             Task task = new Task();
             task.setName(taskName);
             task.setDescription(taskDesc);
             task.setStatus(status);
             task.setPosition(numOfTasksInStatus + 1);
-//            task.setCreator(creator);
-
             taskRepository.save(task);
             System.out.println(task);
             return ResponseEntity.ok(task);
@@ -92,9 +84,7 @@ public class TaskController {
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task != null) {
-//            status.setPosition(newPosition);
             taskService.moveTask(id, newStatusId, newPosition);
-
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
             return ResponseEntity.ok(actionStatusResponse);
         } else {
@@ -118,7 +108,6 @@ public class TaskController {
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task != null) {
-//            status.setPosition(newPosition);
             task.setName(newName);
             task.setDescription(newDesc);
             taskRepository.save(task);
@@ -137,7 +126,6 @@ public class TaskController {
                 .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
 
         if (taskRepository.existsById(id)) {
-//            taskRepository.deleteById(id);
             taskService.deleteTask(id);
             taskService.updateTaskPositions(task.getStatus().getId());
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
