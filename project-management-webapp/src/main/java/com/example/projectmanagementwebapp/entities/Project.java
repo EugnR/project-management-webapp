@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "col_project_id")
@@ -36,6 +35,4 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Status> projectStatuses;
-
-
 }

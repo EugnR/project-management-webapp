@@ -1,11 +1,10 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
+import com.example.projectmanagementwebapp.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.Status;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
 import com.example.projectmanagementwebapp.repositories.StatusRepository;
-import com.example.projectmanagementwebapp.repositories.TaskRepository;
 import com.example.projectmanagementwebapp.services.StatusService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,7 +105,8 @@ public class StatusController {
         Status status = statusRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
         if (statusRepository.existsById(id)) {
-            statusService.deleteStatus(id);
+            statusRepository.deleteById(id);
+//            statusService.deleteStatus(id);
             statusService.updateStatusPositions(status.getProject().getId());
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
             return ResponseEntity.ok(actionStatusResponse);

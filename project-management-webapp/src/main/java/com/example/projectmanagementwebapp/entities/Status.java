@@ -35,5 +35,4 @@ public class Status{
     @JsonManagedReference
     @ToString.Exclude
     private List<Task> statusTasks;
-
 }

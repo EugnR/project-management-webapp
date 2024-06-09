@@ -1,6 +1,6 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
+import com.example.projectmanagementwebapp.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -60,12 +60,10 @@ public class UserController {
             userRepository.save(user);
             System.out.println(user);
             return ResponseEntity.ok(user);
-
         } catch (Exception e){
             System.out.println(e);
             return (ResponseEntity<?>) ResponseEntity.internalServerError();
         }
-
     }
 
 

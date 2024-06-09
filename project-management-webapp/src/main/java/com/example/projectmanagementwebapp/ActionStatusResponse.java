@@ -1,4 +1,4 @@
-package com.example.projectmanagementwebapp.entities;
+package com.example.projectmanagementwebapp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
