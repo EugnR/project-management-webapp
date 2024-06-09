@@ -1,6 +1,6 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.entities.AuthResponse;
+import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.Status;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
@@ -82,51 +82,51 @@ public class StatusController {
 
     }
 
-    @PostMapping("editStatusPosition/{id}")
-    public ResponseEntity<AuthResponse> editStatusPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
+    @PostMapping("editStatusPosition/{id}/{newPosition}")
+    public ResponseEntity<ActionStatusResponse> editStatusPosition(@PathVariable Integer id, @PathVariable Integer newPosition){
         Status status = statusRepository.findById(id).orElse(null);
 
         if (status != null) {
 //            status.setPosition(newPosition);
             statusService.moveStatus(id, newPosition);
 
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
     @PostMapping("editStatusName/{id}")
-    public ResponseEntity<AuthResponse> editStatusName(@PathVariable Integer id, @RequestParam("newStatusName") String newName){
+    public ResponseEntity<ActionStatusResponse> editStatusName(@PathVariable Integer id, @RequestParam("newStatusName") String newName){
         Status status = statusRepository.findById(id).orElse(null);
 
         if (status != null) {
 //            status.setPosition(newPosition);
             status.setName(newName);
             statusRepository.save(status);
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 
 
     @DeleteMapping("deleteStatus/{id}")
-    public ResponseEntity<AuthResponse> deleteStatus(@PathVariable Integer id) {
+    public ResponseEntity<ActionStatusResponse> deleteStatus(@PathVariable Integer id) {
         Status status = statusRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
         if (statusRepository.existsById(id)) {
 //            statusRepository.deleteById(id);
             statusService.deleteStatus(id);
             statusService.updateStatusPositions(status.getProject().getId());
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 

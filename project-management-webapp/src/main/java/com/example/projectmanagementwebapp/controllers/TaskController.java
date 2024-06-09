@@ -4,6 +4,7 @@ import com.example.projectmanagementwebapp.entities.*;
 import com.example.projectmanagementwebapp.repositories.StatusRepository;
 import com.example.projectmanagementwebapp.repositories.TaskRepository;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
+import com.example.projectmanagementwebapp.services.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -23,15 +23,22 @@ public class TaskController {
     StatusRepository statusRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    TaskService taskService;
 
     @GetMapping("/getAllTasks")
-    public List<Task> getAllStatuses(){
+    public List<Task> getAllTasks(){
         List<Task> taskList = taskRepository.findAll();
         return taskList;
     }
+    @DeleteMapping("deleteAllTasks")
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
+    }
+
 
     @GetMapping("getTasksByStatusId/{statusId}")
-    public ResponseEntity<?> getProjectStatuses(@PathVariable Integer statusId){
+    public ResponseEntity<?> getStatusTasks(@PathVariable Integer statusId){
 
         Status status = statusRepository.findById(statusId).orElse(null);
         if (status != null){
@@ -44,7 +51,7 @@ public class TaskController {
     }
 
     @PostMapping("/createTask")
-    public ResponseEntity<?> postProject(@RequestBody String json){
+    public ResponseEntity<?> createTask(@RequestBody String json){
         try {
             ObjectMapper requestMapper = new ObjectMapper();
             JsonNode rootNode = requestMapper.readTree(json);
@@ -52,10 +59,11 @@ public class TaskController {
             String taskName = rootNode.get("name").asText();
             String taskDesc = rootNode.get("description").asText();
             Integer statusId = rootNode.get("statusId").asInt();
-            Integer taskPosition = rootNode.get("position").asInt();
 //            Integer creatorId = rootNode.get("creatorId").asInt();
 
             Status status = statusRepository.findById(statusId).orElse(null);
+            Integer numOfTasksInStatus = status.getStatusTasks().size();
+
             //ПОСЛЕ ДЕБАГА ВЕРНУТЬ!!!!
 //            if (status == null){ throw new RuntimeException("Status not found");}
 
@@ -65,7 +73,7 @@ public class TaskController {
             task.setName(taskName);
             task.setDescription(taskDesc);
             task.setStatus(status);
-            task.setPosition(taskPosition);
+            task.setPosition(numOfTasksInStatus + 1);
 //            task.setCreator(creator);
 
             taskRepository.save(task);
@@ -79,18 +87,64 @@ public class TaskController {
 
     }
 
-    @DeleteMapping("deleteTask/{id}")
-    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+    @PostMapping("editTaskPosition/{id}/{newStatusId}/{newPosition}")
+    public ResponseEntity<ActionStatusResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newStatusId, @PathVariable Integer newPosition){
+        Task task = taskRepository.findById(id).orElse(null);
 
-        Task task = taskRepository.getById(id);
+        if (task != null) {
+//            status.setPosition(newPosition);
+            taskService.moveTask(id, newStatusId, newPosition);
+
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
+        } else {
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
+        }
+    }
+
+    @PostMapping("editTask/{id}")
+    public ResponseEntity<ActionStatusResponse> editStatusName(@PathVariable Integer id, @RequestParam("newTaskName") String newName,
+                                                               @RequestParam("newTaskDesc") String newDesc){
+
+        // Присвоение значений по умолчанию, если параметры пустые
+        if (newName == null || newName.trim().isEmpty()) {
+            newName = "Без названия";
+        }
+        if (newDesc == null || newDesc.trim().isEmpty()) {
+            newDesc = "Нет описания";
+        }
+
+        Task task = taskRepository.findById(id).orElse(null);
+
+        if (task != null) {
+//            status.setPosition(newPosition);
+            task.setName(newName);
+            task.setDescription(newDesc);
+            taskRepository.save(task);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
+        } else {
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
+        }
+    }
+
+
+    @DeleteMapping("deleteTask/{id}")
+    public ResponseEntity<ActionStatusResponse> deleteTask(@PathVariable Integer id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
 
         if (taskRepository.existsById(id)) {
-            taskRepository.deleteById(id);
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+//            taskRepository.deleteById(id);
+            taskService.deleteTask(id);
+            taskService.updateTaskPositions(task.getStatus().getId());
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 

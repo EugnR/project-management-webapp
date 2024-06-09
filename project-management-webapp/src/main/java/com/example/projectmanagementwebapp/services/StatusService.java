@@ -38,7 +38,7 @@ public class StatusService {
 //        taskRepository.saveAll(tasks);
 //    }
     //@Transactional
-    public void updateStatusPositions(Integer projectId) {
+    public void updateStatusPositions(Integer projectId) {      //для переустановки положений после удаления
     // Получить проект по ID
     Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new IllegalArgumentException("Project with id " + projectId + " not found."));
