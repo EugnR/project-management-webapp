@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 public class StatusService {
 
     @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
     private StatusRepository statusRepository;
     @Autowired
     ProjectRepository projectRepository;

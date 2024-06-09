@@ -21,12 +21,12 @@ public class TaskService {
     private TaskRepository taskRepository;
     @Autowired
     private StatusRepository statusRepository;
-    @Autowired
-    ProjectRepository projectRepository;
 
-    //@Transactional
-    public void updateTaskPositions(Integer statusId) {     //для переустановки положений после удаления
-        // Получить status по ID
+
+    @Transactional
+    //для переустановки положений после удаления
+    public void updateTaskPositions(Integer statusId) {
+        // Получить задачу по ID
         Status status = statusRepository.findById(statusId)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
 
@@ -40,18 +40,17 @@ public class TaskService {
             tasks.get(i).setPosition(i + 1);
         }
 
-        // Сохранить обновленные задачи
         taskRepository.saveAll(tasks);
     }
 
-    //    @Transactional
+    @Transactional
     public void moveTask(Integer taskId, int newStatusId, int newPosition) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
 
         Status oldStatus = task.getStatus();
 
-        //если задачу переменстили в рамках одного столбца
+        //если задачу переместили в рамках одного столбца
         if (oldStatus.getId() == newStatusId){
             // Получить все задачи статуса
             List<Task> tasksOfOldStatus = oldStatus.getStatusTasks().stream()
@@ -105,18 +104,14 @@ public class TaskService {
 
     }
 
-    //@Transactional
+    @Transactional
     public void deleteTask(Integer taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
 
         Status status = task.getStatus();
 
-        // Удалить задачу
         taskRepository.delete(task);
-
-//        // Обновить позиции оставшихся статусов
-//        updateStatusPositions(project.getId());
     }
 }
 
