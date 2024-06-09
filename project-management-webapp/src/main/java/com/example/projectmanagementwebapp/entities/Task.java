@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "tab_task")
-@Data // используйте Lombok для генерации геттеров, сеттеров, equals, hashCode и toString
+@Data
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,58 +24,13 @@ public class Task {
     @Column(name = "col_task_position", nullable = false)
     private Integer position;
 
-//    @Column(name = "col_task_column", nullable = false)
-//    private Integer column;
-
-
-//    @ManyToOne      //в проекте может быть много задач
-//    @JoinColumn(name = "project_id")
-//    private Project project;
 
     @JsonIgnore
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "status_id")
-    @ToString.Exclude // Исключаем из toString
+    @ToString.Exclude
     private Status status;
 
 }
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "creator_user_id")
-//    private User creator;
-//
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "assignee_user_id")
-//    private User assignee;
-
-
-
-
-//    @Column(name = "col_task_creation-time")
-//    private LocalDateTime creationTime;
-//
-//    @Column(name = "col_task_completion-time")
-//    private LocalDateTime completionTime;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_creator-id")
-//    private User creator;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_assignee-id")
-//    private User assignee;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_tag-id")
-//    private Tag tag;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_priority-id")
-//    private Priority priority;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "col_task_status-id")
-//    private Status status;
 

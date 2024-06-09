@@ -14,7 +14,6 @@ import java.util.List;
 @Table(name = "tab_user")
 @Getter
 @Setter
-//@ToString(exclude = {"userProjects"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,16 +33,5 @@ public class User {
     @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> userProjects;
-
-//    @OneToMany(mappedBy = "creator")
-//    private List<Task> createdTasks;
-//
-//    @OneToMany(mappedBy = "assignee")
-//    private List<Task> assignedTasks;
-
-
-//       вход по одноразовому коду
-//    @Column(name = "col_user_password", length = 30, nullable = false)
-//    private String password;
 
 }

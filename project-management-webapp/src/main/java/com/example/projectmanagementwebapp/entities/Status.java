@@ -33,7 +33,7 @@ public class Status{
     @JsonIgnore
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
     @JsonManagedReference
-    @ToString.Exclude // Исключаем из toString
+    @ToString.Exclude
     private List<Task> statusTasks;
 
 }

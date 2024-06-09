@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "tab_project")
 @Getter
 @Setter
-//@ToString(exclude = {"user"})
 public class Project {
 
     @Id
@@ -32,9 +31,9 @@ public class Project {
     @JsonBackReference
     private User user;
 
-//    по проекту находятся статусы проекта
+    //проект владеет задачами
     @JsonIgnore
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) //проект владеет задачами
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Status> projectStatuses;
 
