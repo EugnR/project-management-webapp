@@ -25,23 +25,22 @@ public class StatusService {
     @Transactional
     //для переустановки положений после удаления
     public void updateStatusPositions(Integer projectId) {
-        // Получить проект по ID
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Project with id "
-                        + projectId + " not found."));
+    // Получить проект по ID
+    Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new IllegalArgumentException("Project with id " + projectId + " not found."));
 
-        // Получить все статусы проекта, отсортированные по позиции
-        List<Status> statuses = project.getProjectStatuses().stream()
-                .sorted(Comparator.comparingInt(Status::getPosition))
-                .collect(Collectors.toList());
+    // Получить все статусы проекта, отсортированные по позиции
+    List<Status> statuses = project.getProjectStatuses().stream()
+            .sorted(Comparator.comparingInt(Status::getPosition))
+            .collect(Collectors.toList());
 
-        // Перенумеровать позиции статусов
-        for (int i = 0; i < statuses.size(); i++) {
-            statuses.get(i).setPosition(i + 1);
-        }
-        // Сохранить обновленные статусы
-        statusRepository.saveAll(statuses);
+    // Перенумеровать позиции статусов
+    for (int i = 0; i < statuses.size(); i++) {
+        statuses.get(i).setPosition(i + 1);
     }
+    // Сохранить обновленные статусы
+    statusRepository.saveAll(statuses);
+}
 
     @Transactional
     public void moveStatus(Integer statusId, int newPosition) {
@@ -70,14 +69,14 @@ public class StatusService {
         statusRepository.saveAll(statuses);
     }
 
-//    @Transactional
-//    public void deleteStatus(Integer statusId) {
-//        Status status = statusRepository.findById(statusId)
-//                .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
-//
-//        Project project = status.getProject();
-//
-//        statusRepository.delete(status);
-//    }
+    @Transactional
+    public void deleteStatus(Integer statusId) {
+        Status status = statusRepository.findById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
+
+        Project project = status.getProject();
+
+        statusRepository.delete(status);
+    }
 }
 

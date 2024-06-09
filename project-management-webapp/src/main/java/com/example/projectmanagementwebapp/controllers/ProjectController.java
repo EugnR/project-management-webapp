@@ -1,6 +1,6 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.ActionStatusResponse;
+import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.Project;
 import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
