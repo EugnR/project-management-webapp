@@ -24,21 +24,9 @@ public class StatusService {
     @Autowired
     ProjectRepository projectRepository;
 
-//    @Transactional
-//    public void updateTaskPositions(Status status, int newPosition) {
-//        // Получить все задачи, связанные с данным статусом
-//        List<Task> tasks = taskRepository.findAllByStatus(status);
-//
-//        // Обновить позицию для каждой задачи
-//        for (Task task : tasks) {
-//            task.setPosition(newPosition);
-//        }
-//
-//        // Сохранить обновленные задачи
-//        taskRepository.saveAll(tasks);
-//    }
-    //@Transactional
-    public void updateStatusPositions(Integer projectId) {      //для переустановки положений после удаления
+    @Transactional
+    //для переустановки положений после удаления
+    public void updateStatusPositions(Integer projectId) {
     // Получить проект по ID
     Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new IllegalArgumentException("Project with id " + projectId + " not found."));
@@ -52,12 +40,11 @@ public class StatusService {
     for (int i = 0; i < statuses.size(); i++) {
         statuses.get(i).setPosition(i + 1);
     }
-
     // Сохранить обновленные статусы
     statusRepository.saveAll(statuses);
 }
 
-//    @Transactional
+    @Transactional
     public void moveStatus(Integer statusId, int newPosition) {
         Status status = statusRepository.findById(statusId)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
@@ -84,18 +71,14 @@ public class StatusService {
         statusRepository.saveAll(statuses);
     }
 
-    //@Transactional
+    @Transactional
     public void deleteStatus(Integer statusId) {
         Status status = statusRepository.findById(statusId)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
 
         Project project = status.getProject();
 
-        // Удалить статус
         statusRepository.delete(status);
-
-//        // Обновить позиции оставшихся статусов
-//        updateStatusPositions(project.getId());
     }
 }
 
