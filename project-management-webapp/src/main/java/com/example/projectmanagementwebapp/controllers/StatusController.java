@@ -21,15 +21,11 @@ import java.util.List;
 public class StatusController {
     @Autowired
     StatusRepository statusRepository;
-
     @Autowired
     ProjectRepository projectRepository;
-
     @Autowired
     private StatusService statusService;
 
-    @Autowired
-    TaskRepository taskRepository;
 
     @GetMapping("/getAllStatuses")
     public List<Status> getAllStatuses(){
@@ -39,7 +35,6 @@ public class StatusController {
 
     @GetMapping("getStatusesByProjectId/{projectId}")
     public ResponseEntity<?> getProjectStatuses(@PathVariable Integer projectId){
-
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project != null){
             List<Status> statusList = statusRepository.findAllByProject(project);
@@ -48,7 +43,6 @@ public class StatusController {
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Statuses not found");
         }
-
     }
 
     @PostMapping("/createStatus")
@@ -59,9 +53,6 @@ public class StatusController {
 
             String statusName = rootNode.get("name").asText();
             Integer projectId= rootNode.get("projectId").asInt();
-            //Integer position= rootNode.get("position").asInt();
-
-
             Project project = projectRepository.findById(projectId).orElse(null);
             Integer numOfStatusesInProject = project.getProjectStatuses().size();
 
@@ -79,7 +70,6 @@ public class StatusController {
             System.out.println(e);
             return (ResponseEntity<?>) ResponseEntity.internalServerError();
         }
-
     }
 
     @PostMapping("editStatusPosition/{id}/{newPosition}")
@@ -87,9 +77,7 @@ public class StatusController {
         Status status = statusRepository.findById(id).orElse(null);
 
         if (status != null) {
-//            status.setPosition(newPosition);
             statusService.moveStatus(id, newPosition);
-
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
             return ResponseEntity.ok(actionStatusResponse);
         } else {
@@ -102,7 +90,6 @@ public class StatusController {
         Status status = statusRepository.findById(id).orElse(null);
 
         if (status != null) {
-//            status.setPosition(newPosition);
             status.setName(newName);
             statusRepository.save(status);
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
@@ -119,7 +106,6 @@ public class StatusController {
         Status status = statusRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
         if (statusRepository.existsById(id)) {
-//            statusRepository.deleteById(id);
             statusService.deleteStatus(id);
             statusService.updateStatusPositions(status.getProject().getId());
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
