@@ -30,17 +30,13 @@ public class UserController {
 
             User user = userRepository.findByName(login);
 
-            // Пример логики аутентификации. Замените на вашу логику.
             if (user != null && user.getPassword().equals(password)) {
                 ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", user.getId().toString());
                 return ResponseEntity.ok(actionStatusResponse);
             } else {
                 ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", user.getId().toString());
                 return ResponseEntity.ok(actionStatusResponse);
-
             }
-
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ActionStatusResponse("Fail", null));
         }
