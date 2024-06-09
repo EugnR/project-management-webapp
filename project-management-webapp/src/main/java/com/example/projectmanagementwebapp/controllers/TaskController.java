@@ -88,24 +88,24 @@ public class TaskController {
     }
 
     @PostMapping("editTaskPosition/{id}/{newStatusId}/{newPosition}")
-    public ResponseEntity<AuthResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newStatusId, @PathVariable Integer newPosition){
+    public ResponseEntity<ActionStatusResponse> editTaskPosition(@PathVariable Integer id, @PathVariable Integer newStatusId, @PathVariable Integer newPosition){
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task != null) {
 //            status.setPosition(newPosition);
             taskService.moveTask(id, newStatusId, newPosition);
 
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 
     @PostMapping("editTask/{id}")
-    public ResponseEntity<AuthResponse> editStatusName(@PathVariable Integer id, @RequestParam("newTaskName") String newName,
-                                                       @RequestParam("newTaskDesc") String newDesc){
+    public ResponseEntity<ActionStatusResponse> editStatusName(@PathVariable Integer id, @RequestParam("newTaskName") String newName,
+                                                               @RequestParam("newTaskDesc") String newDesc){
 
         // Присвоение значений по умолчанию, если параметры пустые
         if (newName == null || newName.trim().isEmpty()) {
@@ -122,17 +122,17 @@ public class TaskController {
             task.setName(newName);
             task.setDescription(newDesc);
             taskRepository.save(task);
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 
 
     @DeleteMapping("deleteTask/{id}")
-    public ResponseEntity<AuthResponse> deleteTask(@PathVariable Integer id) {
+    public ResponseEntity<ActionStatusResponse> deleteTask(@PathVariable Integer id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
 
@@ -140,11 +140,11 @@ public class TaskController {
 //            taskRepository.deleteById(id);
             taskService.deleteTask(id);
             taskService.updateTaskPositions(task.getStatus().getId());
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 

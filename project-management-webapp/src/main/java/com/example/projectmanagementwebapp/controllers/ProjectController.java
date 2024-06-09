@@ -1,8 +1,7 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.entities.AuthResponse;
+import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.Project;
-import com.example.projectmanagementwebapp.entities.Status;
 import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.ProjectRepository;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
@@ -13,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -94,27 +90,18 @@ public class ProjectController {
     }
 
 
-    @PutMapping("/projectPut")
-    public String putProject(@RequestBody String json){
-        try {
 
-        }
-        catch (Exception e){
-            return "Ошибка обработки JSON: " + e.getMessage();
-        }
-        return json;
-    }
 
     @DeleteMapping("deleteProject/{id}")
-    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+    public ResponseEntity<ActionStatusResponse> deleteEntity(@PathVariable Integer id) {
 
         if (projectRepository.existsById(id)) {
             projectRepository.deleteById(id);
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 }

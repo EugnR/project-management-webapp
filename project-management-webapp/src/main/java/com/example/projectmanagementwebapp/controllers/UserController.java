@@ -1,7 +1,6 @@
 package com.example.projectmanagementwebapp.controllers;
 
-import com.example.projectmanagementwebapp.entities.AuthResponse;
-import com.example.projectmanagementwebapp.entities.Status;
+import com.example.projectmanagementwebapp.entities.ActionStatusResponse;
 import com.example.projectmanagementwebapp.entities.User;
 import com.example.projectmanagementwebapp.repositories.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -22,7 +20,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> Login(@RequestBody String json) {
+    public ResponseEntity<ActionStatusResponse> Login(@RequestBody String json) {
         try {
             ObjectMapper requestMapper = new ObjectMapper();
             JsonNode rootNode = requestMapper.readTree(json);
@@ -34,17 +32,17 @@ public class UserController {
 
             // Пример логики аутентификации. Замените на вашу логику.
             if (user != null && user.getPassword().equals(password)) {
-                AuthResponse authResponse = new AuthResponse("Success", user.getId().toString());
-                return ResponseEntity.ok(authResponse);
+                ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", user.getId().toString());
+                return ResponseEntity.ok(actionStatusResponse);
             } else {
-                AuthResponse authResponse = new AuthResponse("Fail", user.getId().toString());
-                return ResponseEntity.ok(authResponse);
+                ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", user.getId().toString());
+                return ResponseEntity.ok(actionStatusResponse);
 
             }
 
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Fail", null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ActionStatusResponse("Fail", null));
         }
     }
 
@@ -78,7 +76,6 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers(){
         List<User> userList = userRepository.findAll();
-
         return userList;
     }
 
@@ -95,15 +92,15 @@ public class UserController {
     }
 
     @DeleteMapping("deleteUser/{id}")
-    public ResponseEntity<AuthResponse> deleteEntity(@PathVariable Integer id) {
+    public ResponseEntity<ActionStatusResponse> deleteEntity(@PathVariable Integer id) {
 
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
-            AuthResponse authResponse = new AuthResponse("Success", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         } else {
-            AuthResponse authResponse = new AuthResponse("Fail", id.toString());
-            return ResponseEntity.ok(authResponse);
+            ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Fail", id.toString());
+            return ResponseEntity.ok(actionStatusResponse);
         }
     }
 }
