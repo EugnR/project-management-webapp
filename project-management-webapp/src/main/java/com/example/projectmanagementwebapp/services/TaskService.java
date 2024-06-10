@@ -46,7 +46,8 @@ public class TaskService {
     @Transactional
     public void moveTask(Integer taskId, int newStatusId, int newPosition) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
+                .orElseThrow(() -> new IllegalArgumentException("Task with id "
+                        + taskId + " not found."));
 
         Status oldStatus = task.getStatus();
 
@@ -104,14 +105,14 @@ public class TaskService {
 
     }
 
-    @Transactional
-    public void deleteTask(Integer taskId) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
-
-        Status status = task.getStatus();
-
-        taskRepository.delete(task);
-    }
+//    @Transactional
+//    public void deleteTask(Integer taskId) {
+//        Task task = taskRepository.findById(taskId)
+//                .orElseThrow(() -> new IllegalArgumentException("Task with id " + taskId + " not found."));
+//
+//        Status status = task.getStatus();
+//
+//        taskRepository.delete(task);
+//    }
 }
 

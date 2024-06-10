@@ -122,12 +122,12 @@ public class TaskController {
 
     @DeleteMapping("deleteTask/{id}")
     public ResponseEntity<ActionStatusResponse> deleteTask(@PathVariable Integer id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
-
         if (taskRepository.existsById(id)) {
-            taskService.deleteTask(id);
-            taskService.updateTaskPositions(task.getStatus().getId());
+            Task task = taskRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Task with id " + id + " not found."));
+            Integer taskStatusId = task.getStatus().getId();
+            taskRepository.deleteById(id);
+            taskService.updateTaskPositions(taskStatusId);
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
             return ResponseEntity.ok(actionStatusResponse);
         } else {

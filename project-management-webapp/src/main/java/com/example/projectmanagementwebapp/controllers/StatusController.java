@@ -103,11 +103,12 @@ public class StatusController {
 
     @DeleteMapping("deleteStatus/{id}")
     public ResponseEntity<ActionStatusResponse> deleteStatus(@PathVariable Integer id) {
-        Status status = statusRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
         if (statusRepository.existsById(id)) {
-            statusService.deleteStatus(id);
-            statusService.updateStatusPositions(status.getProject().getId());
+            Status status = statusRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " not found."));
+            Integer statusProjectId = status.getProject().getId();
+            statusRepository.deleteById(id);
+            statusService.updateStatusPositions(statusProjectId);
             ActionStatusResponse actionStatusResponse = new ActionStatusResponse("Success", id.toString());
             return ResponseEntity.ok(actionStatusResponse);
         } else {

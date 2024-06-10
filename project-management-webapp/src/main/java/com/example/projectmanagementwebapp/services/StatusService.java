@@ -27,7 +27,8 @@ public class StatusService {
     public void updateStatusPositions(Integer projectId) {
     // Получить проект по ID
     Project project = projectRepository.findById(projectId)
-            .orElseThrow(() -> new IllegalArgumentException("Project with id " + projectId + " not found."));
+            .orElseThrow(() -> new IllegalArgumentException("Project with id "
+                    + projectId + " not found."));
 
     // Получить все статусы проекта, отсортированные по позиции
     List<Status> statuses = project.getProjectStatuses().stream()
@@ -45,7 +46,8 @@ public class StatusService {
     @Transactional
     public void moveStatus(Integer statusId, int newPosition) {
         Status status = statusRepository.findById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
+                .orElseThrow(() -> new IllegalArgumentException("Status with id "
+                        + statusId + " not found."));
 
         Project project = status.getProject();
 
@@ -69,14 +71,14 @@ public class StatusService {
         statusRepository.saveAll(statuses);
     }
 
-    @Transactional
-    public void deleteStatus(Integer statusId) {
-        Status status = statusRepository.findById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
-
-        Project project = status.getProject();
-
-        statusRepository.delete(status);
-    }
+//    @Transactional
+//    public void deleteStatus(Integer statusId) {
+//        Status status = statusRepository.findById(statusId)
+//                .orElseThrow(() -> new IllegalArgumentException("Status with id " + statusId + " not found."));
+//
+//        Project project = status.getProject();
+//
+//        statusRepository.delete(status);
+//    }
 }
 
